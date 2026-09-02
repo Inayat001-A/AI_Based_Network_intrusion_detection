@@ -15,6 +15,9 @@ models/*.h5
 models/*.pt
 models/*.joblib
 !models/.gitkeep
+logs/*.jsonl
+logs/*.csv
+!logs/.gitkeep
 
 # Documentation & Roadmap (local)
 complete_project_Roadmap.txt
