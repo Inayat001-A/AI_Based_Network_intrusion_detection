@@ -1,7 +1,45 @@
-numpy
-pandas
-scikit-learn
-matplotlib
-seaborn
-xgboost
-joblib
+﻿# ==============================================================================
+# AI-Based Network Intrusion Detection System (NIDS) - Dependencies
+# ==============================================================================
+
+# Core Data Processing & Numerics
+numpy>=1.24.0
+pandas>=2.0.0
+scipy>=1.10.0
+
+# Machine Learning & Feature Engineering
+scikit-learn>=1.3.0
+xgboost>=2.0.0
+lightgbm>=4.0.0
+imbalanced-learn>=0.11.0
+joblib>=1.3.0
+
+# Deep Learning Frameworks
+torch>=2.0.0
+torchvision>=0.15.0
+
+# Hyperparameter Optimization
+optuna>=3.3.0
+
+# Network Packet Capture & Flow Telemetry
+scapy>=2.5.0
+pyshark>=0.6.0
+
+# Data Visualization & Exploratory Data Analysis
+matplotlib>=3.7.0
+seaborn>=0.12.0
+plotly>=5.16.0
+
+# Web Dashboard & Monitoring UI
+streamlit>=1.28.0
+fastapi>=0.104.0
+uvicorn>=0.24.0
+pydantic>=2.4.0
+
+# Utilities, Formatting & Logging
+tqdm>=4.66.0
+rich>=13.6.0
+python-dotenv>=1.0.0
+
+# Testing & Quality Assurance
+pytest>=7.4.0
