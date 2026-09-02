@@ -1,0 +1,44 @@
+{
+    "dataset_name": "cic-ids2017",
+    "total_records": 50000,
+    "clean_records": 50000,
+    "feature_count": 79,
+    "total_nulls": 0,
+    "total_infs": 0,
+    "class_distribution": {
+        "BENIGN": {
+            "count": 37591,
+            "percentage": 75.18
+        },
+        "DoS Hulk": {
+            "count": 5933,
+            "percentage": 11.87
+        },
+        "PortScan": {
+            "count": 3506,
+            "percentage": 7.01
+        },
+        "SSH-Patator": {
+            "count": 1976,
+            "percentage": 3.95
+        },
+        "Bot": {
+            "count": 994,
+            "percentage": 1.99
+        }
+    },
+    "imbalance_ratios_to_majority": {
+        "BENIGN": 1.0,
+        "DoS Hulk": 6.34,
+        "PortScan": 10.72,
+        "SSH-Patator": 19.02,
+        "Bot": 37.82
+    },
+    "generated_figures": [
+        "01_class_distribution.png",
+        "02_flow_duration_by_attack.png",
+        "03_packet_length_scatter.png",
+        "04_tcp_flags_by_attack.png",
+        "05_feature_correlation_heatmap.png"
+    ]
+}
