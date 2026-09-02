@@ -1,4 +1,4 @@
-__pycache__/
+﻿__pycache__/
 *.py[cod]
 *.class
 .env
@@ -8,9 +8,13 @@ ENV/
 .ipynb_checkpoints/
 data/raw/*
 !data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
 models/*.pkl
 models/*.h5
 models/*.pt
+models/*.joblib
+!models/.gitkeep
 
 # Documentation & Roadmap (local)
 complete_project_Roadmap.txt
