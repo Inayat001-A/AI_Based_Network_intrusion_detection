@@ -11,3 +11,6 @@ data/raw/*
 models/*.pkl
 models/*.h5
 models/*.pt
+
+# Documentation & Roadmap (local)
+complete_project_Roadmap.txt
