@@ -7,9 +7,9 @@ import os
 import sys
 import argparse
 import urllib.request
+from pathlib import Path
 import numpy as np
 import pandas as pd
-from pathlib import Path
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 RAW_DATA_DIR = DATA_DIR / "raw"
@@ -29,30 +29,6 @@ NSL_KDD_COLUMNS = [
     "dst_host_rerror_rate", "dst_host_srv_rerror_rate", "label", "difficulty_level"
 ]
 
-# Standard CIC-IDS2017 Flow Feature Columns (80 features + Label)
-CIC_IDS2017_COLUMNS = [
-    "Destination Port", "Flow Duration", "Total Fwd Packets", "Total Backward Packets",
-    "Total Length of Fwd Packets", "Total Length of Bwd Packets", "Fwd Packet Length Max",
-    "Fwd Packet Length Min", "Fwd Packet Length Mean", "Fwd Packet Length Std",
-    "Bwd Packet Length Max", "Bwd Packet Length Min", "Bwd Packet Length Mean",
-    "Bwd Packet Length Std", "Flow Bytes/s", "Flow Packets/s", "Flow IAT Mean",
-    "Flow IAT Std", "Flow IAT Max", "Flow IAT Min", "Fwd IAT Total", "Fwd IAT Mean",
-    "Fwd IAT Std", "Fwd IAT Max", "Fwd IAT Min", "Bwd IAT Total", "Bwd IAT Mean",
-    "Bwd IAT Std", "Bwd IAT Max", "Bwd IAT Min", "Fwd PSH Flags", "Bwd PSH Flags",
-    "Fwd URG Flags", "Bwd URG Flags", "Fwd Header Length", "Bwd Header Length",
-    "Fwd Packets/s", "Bwd Packets/s", "Min Packet Length", "Max Packet Length",
-    "Packet Length Mean", "Packet Length Std", "Packet Length Variance", "FIN Flag Count",
-    "SYN Flag Count", "RST Flag Count", "PSH Flag Count", "ACK Flag Count",
-    "URG Flag Count", "CWE Flag Count", "ECE Flag Count", "Down/Up Ratio",
-    "Average Packet Size", "Avg Fwd Segment Size", "Avg Bwd Segment Size",
-    "Fwd Header Length.1", "Fwd Avg Bytes/Bulk", "Fwd Avg Packets/Bulk",
-    "Fwd Avg Bulk Rate", "Bwd Avg Bytes/Bulk", "Bwd Avg Packets/Bulk", "Bwd Avg Bulk Rate",
-    "Subflow Fwd Packets", "Subflow Fwd Bytes", "Subflow Bwd Packets", "Subflow Bwd Bytes",
-    "Init_Win_bytes_forward", "Init_Win_bytes_backward", "act_data_pkt_fwd",
-    "min_seg_size_forward", "Active Mean", "Active Std", "Active Max", "Active Min",
-    "Idle Mean", "Idle Std", "Idle Max", "Idle Min", "Label"
-]
-
 
 def download_nsl_kdd(target_dir=RAW_DATA_DIR / "nsl_kdd"):
     """Downloads the NSL-KDD benchmark dataset."""
@@ -69,14 +45,14 @@ def download_nsl_kdd(target_dir=RAW_DATA_DIR / "nsl_kdd"):
             urllib.request.urlretrieve(url, dest)
             print(f"[+] Downloaded: {dest}")
         else:
-            print(f"[✓] {f} already exists.")
+            print(f"[+] {f} already exists.")
         downloaded_paths.append(dest)
     
     df = pd.read_csv(downloaded_paths[0], header=None, names=NSL_KDD_COLUMNS)
     return df
 
 
-def generate_synthetic_cic_ids(n_samples=50000, random_state=42):
+def generate_synthetic_cic_ids(n_samples=50000, random_state=42, save=False):
     """
     Generates high-fidelity synthetic CIC-IDS2017 network flow traffic
     with authentic statistical distributions and multi-class cyber attacks.
@@ -91,8 +67,6 @@ def generate_synthetic_cic_ids(n_samples=50000, random_state=42):
     labels = np.random.choice(attack_types, size=n_samples, p=class_probs)
     
     data = {}
-    
-    # Generate realistic features per class
     dst_ports = []
     flow_durations = []
     total_fwd_pkts = []
@@ -111,9 +85,8 @@ def generate_synthetic_cic_ids(n_samples=50000, random_state=42):
     
     for lbl in labels:
         if lbl == "BENIGN":
-            # Normal HTTP/HTTPS/DNS traffic
             dst_ports.append(np.random.choice([80, 443, 53, 8080, 22, 445]))
-            dur = np.random.exponential(scale=2_000_000) + 500  # microseconds
+            dur = np.random.exponential(scale=2_000_000) + 500
             fwd_p = np.random.randint(2, 30)
             bwd_p = np.random.randint(1, 35)
             fwd_lm = np.random.normal(loc=120, scale=40)
@@ -127,7 +100,6 @@ def generate_synthetic_cic_ids(n_samples=50000, random_state=42):
             init_win_bwd.append(np.random.randint(8192, 65535))
             
         elif lbl == "DoS Hulk":
-            # Flood: very high packet count, high bytes/s, port 80/443
             dst_ports.append(np.random.choice([80, 443, 8080]))
             dur = np.random.exponential(scale=8_000_000) + 50_000
             fwd_p = np.random.randint(50, 400)
@@ -143,7 +115,6 @@ def generate_synthetic_cic_ids(n_samples=50000, random_state=42):
             init_win_bwd.append(np.random.randint(200, 4096))
             
         elif lbl == "PortScan":
-            # Probing: 1-2 packets, fast, diverse ports, high SYN, no ACK/PSH
             dst_ports.append(np.random.randint(1, 65535))
             dur = np.random.exponential(scale=5_000) + 20
             fwd_p = np.random.randint(1, 3)
@@ -159,7 +130,6 @@ def generate_synthetic_cic_ids(n_samples=50000, random_state=42):
             init_win_bwd.append(-1 if bwd_p == 0 else 0)
             
         elif lbl == "SSH-Patator":
-            # Brute force login on port 22: repetitive small packets
             dst_ports.append(22)
             dur = np.random.exponential(scale=600_000) + 10_000
             fwd_p = np.random.randint(15, 40)
@@ -175,7 +145,6 @@ def generate_synthetic_cic_ids(n_samples=50000, random_state=42):
             init_win_bwd.append(np.random.randint(14600, 29200))
             
         else: # Bot
-            # Command & control beaconing
             dst_ports.append(np.random.choice([8080, 6667, 4444, 80]))
             dur = np.random.exponential(scale=5_000_000) + 200_000
             fwd_p = np.random.randint(8, 25)
@@ -219,7 +188,6 @@ def generate_synthetic_cic_ids(n_samples=50000, random_state=42):
     data["Flow Bytes/s"] = np.array(flow_bytes_sec, dtype=np.float64)
     data["Flow Packets/s"] = np.array(flow_pkts_sec, dtype=np.float64)
     
-    # Inter-Arrival Times (IAT)
     iat_base = data["Flow Duration"] / np.maximum(data["Total Fwd Packets"] + data["Total Backward Packets"], 1)
     data["Flow IAT Mean"] = iat_base
     data["Flow IAT Std"] = iat_base * 0.6
@@ -236,7 +204,6 @@ def generate_synthetic_cic_ids(n_samples=50000, random_state=42):
     data["Bwd IAT Max"] = data["Bwd IAT Mean"] * 2.1
     data["Bwd IAT Min"] = np.maximum(0, data["Bwd IAT Mean"] * 0.1)
     
-    # Header & Flag Counts
     data["Fwd PSH Flags"] = np.array(psh_flags, dtype=np.int32)
     data["Bwd PSH Flags"] = np.zeros(n_samples, dtype=np.int32)
     data["Fwd URG Flags"] = np.zeros(n_samples, dtype=np.int32)
@@ -290,11 +257,11 @@ def generate_synthetic_cic_ids(n_samples=50000, random_state=42):
     
     df = pd.DataFrame(data)
     
-    # Save raw benchmark CSV
-    RAW_DATA_DIR.mkdir(parents=True, exist_ok=True)
-    out_file = RAW_DATA_DIR / "cic_ids2017_benchmark.csv"
-    df.to_csv(out_file, index=False)
-    print(f"[+] Saved synthetic dataset to: {out_file} (Shape: {df.shape})")
+    if save:
+        RAW_DATA_DIR.mkdir(parents=True, exist_ok=True)
+        out_file = RAW_DATA_DIR / "cic_ids2017_benchmark.csv"
+        df.to_csv(out_file, index=False)
+        print(f"[+] Saved synthetic dataset to: {out_file} (Shape: {df.shape})")
     return df
 
 
@@ -307,7 +274,7 @@ def load_dataset(dataset_name="cic-ids2017", sample_size=None):
     if dataset_name.lower() in ["cic-ids2017", "cicids"]:
         csv_path = RAW_DATA_DIR / "cic_ids2017_benchmark.csv"
         if not csv_path.exists():
-            df = generate_synthetic_cic_ids(n_samples=50000)
+            df = generate_synthetic_cic_ids(n_samples=50000, save=True)
         else:
             print(f"[*] Loading existing CIC-IDS2017 dataset from {csv_path}...")
             df = pd.read_csv(csv_path)
