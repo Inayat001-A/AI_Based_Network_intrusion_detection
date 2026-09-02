@@ -1,5 +1,5 @@
 {
-    "evaluation_timestamp": "2026-09-02 17:11:56",
+    "evaluation_timestamp": "2026-09-02 18:02:32",
     "model_type": "XGBClassifier",
     "test_samples": 10000,
     "overall_accuracy": 0.9991,
@@ -8,8 +8,8 @@
     "macro_recall": 0.9998,
     "false_positive_rate": 0.001197,
     "false_alarm_count": 9,
-    "throughput_flows_per_sec": 52192.5,
-    "latency_per_flow_microseconds": 19.16,
+    "throughput_flows_per_sec": 89394.0,
+    "latency_per_flow_microseconds": 11.19,
     "per_class_metrics": {
         "BENIGN": {
             "precision": 1.0,
