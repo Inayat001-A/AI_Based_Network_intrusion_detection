@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+*.class
+.env
+virtualenv/
+venv/
+ENV/
+.ipynb_checkpoints/
+data/raw/*
+!data/raw/.gitkeep
+models/*.pkl
+models/*.h5
+models/*.pt
