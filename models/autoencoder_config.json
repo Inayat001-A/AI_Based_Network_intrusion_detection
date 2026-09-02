@@ -1,0 +1,6 @@
+{
+    "input_dim": 30,
+    "latent_dim": 4,
+    "threshold_percentile": 99.0,
+    "threshold": 0.09325568377971649
+}

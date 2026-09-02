@@ -1,0 +1,56 @@
+[
+    {
+        "model": "Logistic Regression (Baseline)",
+        "accuracy": 0.9956,
+        "precision_macro": 0.9685,
+        "recall_macro": 0.9988,
+        "f1_macro": 0.9829,
+        "train_time_sec": 0.61,
+        "inference_latency_ms_per_1k": 1.56
+    },
+    {
+        "model": "Random Forest (Tree Baseline)",
+        "accuracy": 0.9992,
+        "precision_macro": 0.9932,
+        "recall_macro": 0.9993,
+        "f1_macro": 0.9962,
+        "train_time_sec": 5.99,
+        "inference_latency_ms_per_1k": 7.65
+    },
+    {
+        "model": "XGBoost Classifier",
+        "accuracy": 0.9991,
+        "precision_macro": 0.9936,
+        "recall_macro": 0.9998,
+        "f1_macro": 0.9966,
+        "train_time_sec": 5.75,
+        "inference_latency_ms_per_1k": 9.97
+    },
+    {
+        "model": "LightGBM Classifier",
+        "accuracy": 0.9989,
+        "precision_macro": 0.9916,
+        "recall_macro": 0.9997,
+        "f1_macro": 0.9956,
+        "train_time_sec": 4.4,
+        "inference_latency_ms_per_1k": 30.02
+    },
+    {
+        "model": "1D-CNN Deep Neural Net",
+        "accuracy": 0.997,
+        "precision_macro": 0.9783,
+        "recall_macro": 0.9992,
+        "f1_macro": 0.9884,
+        "train_time_sec": 115.43,
+        "inference_latency_ms_per_1k": 60.04
+    },
+    {
+        "model": "LSTM Sequence Neural Net",
+        "accuracy": 0.997,
+        "precision_macro": 0.9795,
+        "recall_macro": 0.9992,
+        "f1_macro": 0.9891,
+        "train_time_sec": 47.42,
+        "inference_latency_ms_per_1k": 13.58
+    }
+]
